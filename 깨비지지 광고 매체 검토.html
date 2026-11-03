@@ -1,0 +1,448 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>깨비지지 광고 매체 검토</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: 보고서 헤더 + 결론 요약 → 탭 5개(검토 순서) → 탭별 개조식 본문. 도깨비불 청록을 단일 포인트로 사용 */
+:root{
+  --bg:#f6f7f6; --surface:#ffffff; --ink:#18201f; --muted:#5b6765; --line:#dde3e1;
+  --accent:#0f7a6e; --accent-soft:#e2f1ee; --accent-ink:#0b5a51;
+  --good:#1f7a3a; --good-bg:#e5f3e8; --warn:#9a6200; --warn-bg:#fbf0dc; --bad:#a8322a; --bad-bg:#f8e4e2;
+  --blank:#fffbe8; --blank-line:#e6d9a2;
+  --sans:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#111615; --surface:#182120; --ink:#e4ebe9; --muted:#97a6a3; --line:#2a3634;
+  --accent:#46c2b2; --accent-soft:#16302c; --accent-ink:#7fdccf;
+  --good:#6fcf88; --good-bg:#16301e; --warn:#e2b25a; --warn-bg:#33280f; --bad:#ec8a80; --bad-bg:#3a1d1a;
+  --blank:#2a2714; --blank-line:#5a5024; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#111615; --surface:#182120; --ink:#e4ebe9; --muted:#97a6a3; --line:#2a3634;
+  --accent:#46c2b2; --accent-soft:#16302c; --accent-ink:#7fdccf;
+  --good:#6fcf88; --good-bg:#16301e; --warn:#e2b25a; --warn-bg:#33280f; --bad:#ec8a80; --bad-bg:#3a1d1a;
+  --blank:#2a2714; --blank-line:#5a5024; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.7;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:32px 64px}
+.wrap{max-width:920px;margin:0 auto;display:flex;flex-direction:column;gap:24px}
+a{color:var(--accent-ink)}
+header .eyebrow{font-size:12px;letter-spacing:.08em;color:var(--accent-ink);font-weight:600}
+h1{font-size:28px;line-height:1.3;margin:4px 0 6px;text-wrap:balance}
+.meta{color:var(--muted);font-size:13px;display:flex;flex-wrap:wrap;gap:4px 14px}
+.meta code{font-family:var(--mono);font-size:12px}
+.summary{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:12px}
+.summary h2{font-size:14px;margin:0 0 8px;color:var(--accent-ink)}
+.summary ol{margin:0;padding-left:20px;display:grid;gap:4px}
+.verdicts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.verdicts div{border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:13px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px}
+.verdicts span:first-child{color:var(--muted);font-size:12px}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:1px 9px;border-radius:999px;width:fit-content}
+.pill.good{background:var(--good-bg);color:var(--good)}
+.pill.warn{background:var(--warn-bg);color:var(--warn)}
+.pill.bad{background:var(--bad-bg);color:var(--bad)}
+.pill.neutral{background:var(--accent-soft);color:var(--accent-ink)}
+nav.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);overflow-x:auto;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+nav.tabs button{font:inherit;font-size:14px;background:none;border:0;border-bottom:3px solid transparent;color:var(--muted);padding:12px 14px 10px;cursor:pointer;white-space:nowrap}
+nav.tabs button .n{font-family:var(--mono);font-size:12px;margin-right:6px}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+nav.tabs button:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+section.panel{display:flex;flex-direction:column;gap:20px}
+.panel h2{font-size:21px;margin:0}
+.panel h3{font-size:15px;margin:0 0 6px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.lead{color:var(--muted);margin:0}
+.block{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px 18px;min-width:0}
+.block ul{margin:0;padding-left:18px;display:grid;gap:3px}
+.block ul ul{margin-top:3px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.tbl{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:720px}
+th,td{text-align:left;vertical-align:top;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{font-size:12px;color:var(--muted);font-weight:600;background:var(--bg)}
+tr:last-child td{border-bottom:0}
+td.name{font-weight:600;white-space:nowrap}
+td.name small{display:block;font-weight:400;color:var(--muted);font-family:var(--mono);font-size:11.5px}
+tr.pick td{background:var(--accent-soft)}
+.blank{background:var(--blank);border:1px dashed var(--blank-line);border-radius:4px;padding:0 6px;color:var(--muted);font-size:13px;white-space:nowrap}
+.note{font-size:13px;color:var(--muted)}
+.callout{border-left:3px solid var(--warn);background:var(--warn-bg);padding:12px 16px;border-radius:0 6px 6px 0}
+.callout.ok{border-left-color:var(--good);background:var(--good-bg)}
+.calc{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.calc label{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+.calc input{font:inherit;font-family:var(--mono);font-size:14px;padding:7px 9px;border:1px solid var(--line);border-radius:4px;background:var(--bg);color:var(--ink);width:100%}
+.calc input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.out{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:12px}
+.out div{border-top:2px solid var(--accent);padding-top:6px}
+.out span{display:block;font-size:12px;color:var(--muted)}
+.out b{font-family:var(--mono);font-size:18px;font-variant-numeric:tabular-nums}
+.check{list-style:none;padding:0!important}
+.check li{display:flex;gap:8px;align-items:flex-start}
+.check input{margin-top:5px;accent-color:var(--accent);width:15px;height:15px;flex:none;cursor:pointer}
+.check label{cursor:pointer}
+.check input:checked+label{color:var(--muted);text-decoration:line-through}
+.decision{display:grid;gap:8px}
+.decision div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:start;border-bottom:1px solid var(--line);padding-bottom:8px}
+.decision div:last-child{border-bottom:0;padding-bottom:0}
+.src{font-size:12.5px;color:var(--muted)}
+.src ul{padding-left:18px;margin:4px 0 0}
+.mock{border-radius:8px;overflow:hidden;background:#15161c;color:#e9e6dd;font-size:12px;border:1px solid var(--line);max-width:640px}
+.mock .bar{display:flex;align-items:center;gap:14px;padding:10px 14px;border-bottom:3px dotted #3b4a7a;flex-wrap:wrap}
+.mock .logo{font-weight:700;font-size:14px}
+.mock .nav{display:flex;gap:12px;color:#b9b4a6;flex-wrap:wrap}
+.mock .body{padding:22px 16px 16px;display:grid;gap:12px;background:linear-gradient(180deg,#141a4e,#2b2f7c 70%,#1a1d3f)}
+.mock .gate{margin:0 auto;width:min(100%,460px);background:#0d1030;border:7px solid #a12f25;border-top:16px solid #24346e;border-radius:4px;padding:8px;box-shadow:0 6px 0 #6c7398}
+.mock .dots{display:flex;gap:5px;justify-content:flex-end;margin-top:6px}
+.mock .dots i{width:6px;height:6px;border-radius:50%;background:#6c7398}
+.mock .dots i.on{background:#ffd9a8}
+.mock .ad{position:relative;border-radius:8px;padding:16px 18px;background:linear-gradient(100deg,#ff7a1a,#ffb347);color:#2a1300;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.mock .ad b{font-size:16px;display:block}
+.mock .ad .cta{background:#2a1300;color:#ffd9a8;border-radius:999px;padding:6px 12px;font-weight:600;white-space:nowrap}
+.mock .ad .tag{position:absolute;top:6px;right:10px;font-size:10px;opacity:.7}
+.mock .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.mock .cards div{height:44px;border-radius:6px;background:#23252e}
+.mock-cap{font-size:12px;color:var(--muted);margin-top:6px}
+
+/* 예시 화면 */
+.flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px}
+.flow span{background:var(--accent-soft);color:var(--accent-ink);border-radius:999px;padding:3px 10px;font-weight:600}
+.flow i{font-style:normal;color:var(--muted)}
+.step{display:flex;flex-direction:column;gap:8px;min-width:0}
+.step h4{margin:0;font-size:14px;display:flex;gap:8px;align-items:center}
+.step h4 b{font-family:var(--mono);color:var(--accent-ink)}
+.kk{border-radius:8px;overflow:hidden;border:1px solid var(--line);background:#14161d;color:#e9e6dd;font-size:12px}
+.kk .top{display:flex;align-items:center;gap:14px;padding:9px 14px;background:#101218;flex-wrap:wrap}
+.kk .top b{font-size:14px}
+.kk .top .nv{display:flex;gap:12px;color:#a9a495;flex-wrap:wrap}
+.kk .top .nv .on{background:#3a2420;color:#ff9b7a;border-radius:4px;padding:0 6px}
+.kk .sky{position:relative;padding:26px 14px 0;background:radial-gradient(circle at 82% 22%,#e9ecff 0 18px,transparent 19px),linear-gradient(180deg,#151a52,#3a3f9a 65%,#5a4aa0)}
+.kk .roof{width:min(100%,430px);margin:0 auto;height:22px;background:#2a3b7c;border-radius:6px 6px 0 0;border-bottom:4px solid #a12f25}
+.kk .frame{width:min(100%,400px);margin:0 auto;border-left:12px solid #a12f25;border-right:12px solid #a12f25;background:#0d1030;padding:10px 8px 8px}
+.kk .steps{width:min(100%,430px);margin:0 auto;height:14px;background:#5d6386}
+.kk .wall{height:8px;background:repeating-linear-gradient(90deg,#24305f 0 10px,#1a2147 10px 20px)}
+.mb{position:relative;border-radius:6px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;color:#fff;font-size:12px;line-height:1.5}
+.mb b{display:block;font-size:15px}
+.mb .cta{background:#fff;color:#1665e6;border-radius:999px;padding:5px 12px;font-weight:700;white-space:nowrap;font-size:12px}
+.mb .tag{position:absolute;top:4px;right:8px;font-size:9px;opacity:.75}
+.mb.nov{background:linear-gradient(110deg,#1665e6,#4b8dff)}
+.mb.dec{background:linear-gradient(110deg,#5b3fd6,#8a6bff)}
+.mb.jan{background:linear-gradient(110deg,#0b8f86,#2fc4b2)}
+.mb .brand{font-size:10px;opacity:.85;letter-spacing:.04em}
+.kk .dots{display:flex;gap:5px;justify-content:center;margin-top:7px}
+.kk .dots i{width:6px;height:6px;border-radius:50%;background:#6c7398}
+.kk .dots i.on{background:#fff}
+.creatives{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.creatives figure{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+.creatives figcaption{font-size:12px;color:var(--muted)}
+.br{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff;color:#1d2433;font-size:12px}
+.br .url{display:flex;align-items:center;gap:8px;padding:7px 10px;background:#eef1f5;border-bottom:1px solid #dfe3ea;overflow-x:auto}
+.br .url i{width:9px;height:9px;border-radius:50%;background:#cfd5de;flex:none}
+.br .url code{font-family:var(--mono);font-size:11px;background:#fff;border-radius:999px;padding:3px 10px;white-space:nowrap;color:#3a4252}
+.br .url code em{font-style:normal;color:#e05a00;font-weight:600}
+.im{padding:12px 14px;display:grid;gap:10px}
+.im .hd{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.im .logo{font-weight:800;color:#1665e6;font-size:15px}
+.im .hd span{color:#4a5263}
+.im .sch{display:flex;gap:6px}
+.im .sch div{flex:1;border:2px solid #1665e6;border-radius:6px;padding:6px 10px;min-width:0}
+.im .sch b{background:#1665e6;color:#fff;border-radius:6px;padding:6px 18px}
+.im .tick{background:linear-gradient(90deg,#3d8bff,#a58bff);color:#fff;border-radius:4px;padding:6px 10px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.im .tick b{color:#ffe46b}
+.im .gm{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.im .gm b{font-size:15px}
+.im .tg{display:flex;border-radius:999px;background:#eef1f5;padding:2px}
+.im .tg span{padding:2px 10px;border-radius:999px}
+.im .tg .on{background:#1665e6;color:#fff}
+.im .cats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.im .cats span{border:1px solid #2b3240;border-radius:5px;text-align:center;padding:4px 0}
+.im .cats .on{background:#1f8fff;border-color:#1f8fff;color:#fff}
+.im .cnt{color:#4a5263}
+.im .cnt b{color:#e0362c}
+.im .row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid #b9d0ff;background:#f3f7ff;border-radius:6px;padding:8px 10px}
+.im .row small{display:block;color:#7a8394;font-size:10.5px}
+.im .row .pr{color:#1665e6;font-weight:700;text-align:right}
+.im .row .badge{display:inline-block;border:1px solid #1665e6;color:#1665e6;border-radius:999px;font-size:10px;padding:0 6px;margin-top:2px}
+.mock-cap{font-size:12px;color:var(--muted);margin:0}
+@media (prefers-reduced-motion:no-preference){section.panel{animation:fade .18s ease-out}@keyframes fade{from{opacity:.4}to{opacity:1}}}
+</style>
+
+<div class="wrap">
+<header>
+  <h1>광고 매체 검토 보고서</h1>
+  <div class="meta"><span>대상 <a href="https://kkaebigg.com/" target="_blank" rel="noopener"><code>kkaebigg.com</code></a></span><span>작성 <span id="today">2026.11.03</span> · 백가연 매니저</span></div>
+</header>
+
+
+<nav class="tabs" role="tablist" aria-label="검토 항목">
+  <button role="tab" id="t-media" aria-controls="media" aria-selected="true"><span class="n">1</span>매체 검토</button>
+  <button role="tab" id="t-value" aria-controls="value" aria-selected="false"><span class="n">2</span>광고 가치·적정성</button>
+  <button role="tab" id="t-contact" aria-controls="contact" aria-selected="false"><span class="n">3</span>컨택 여부</button>
+  <button role="tab" id="t-plan" aria-controls="plan" aria-selected="false"><span class="n">4</span>집행 계획 (예시)</button>
+</nav>
+
+<!-- 1 -->
+<section class="panel" id="media" role="tabpanel" aria-labelledby="t-media">
+  <h2>매체 검토</h2>
+  <div class="block" style="border-left:4px solid var(--accent)"><p style="margin:0"><b>도깨비의세계 유저가 성장 효율·거래 시세를 계산하고 공략 정보를 얻으려고 찾는 사이트</b></p></div>
+  <div class="grid2">
+    <div class="block"><h3>개요</h3><ul>
+      <li>개설 10.05 (게임 출시 3일 전), 개인 운영</li>
+      <li>거의 매일 업데이트: 패치 수치 반영, 공식 라이브 요약, 신규 계산기 추가</li>
+      <li>수익화: 직접 판매 배너(운영자와 직접 계약, 현재 게임마켓·지지페이 집행 중) + 애드센스</li>
+    </ul></div>
+    <div class="block"><h3>주요 기능</h3><ul>
+      <li>도감: 도술·몬스터·아이템·보물상자</li>
+      <li>계산기 12종: 강화 재료·비용, 스펙업 효율, 거래소 수령액, 재화 최저가 획득 경로</li>
+      <li>보스 시간표, 라이브 요약, 쿠폰</li>
+      <li>문파(길드) 홍보, 질문·자랑 게시판</li>
+    </ul></div>
+  </div>
+  <div class="callout"><h3>리스크</h3><ul style="margin:0;padding-left:18px">
+    <li>비공식 사이트 → 게임사 요청 시 일부 이미지·명칭 수정 가능 (사이트 폐쇄 사례는 없음)</li>
+    <li>개인 운영 → 운영 중단 가능성</li>
+  </ul></div>
+  <div class="src">출처 · <a href="https://kkaebigg.com/" target="_blank" rel="noopener">깨비지지</a> · <a href="https://kkaebigg.com/about/" target="_blank" rel="noopener">소개</a> · <a href="https://gall.dcinside.com/mgallery/board/view/?id=tokkebiworld&no=9308" target="_blank" rel="noopener">디시 소개글</a></div>
+</section>
+
+<!-- 2 -->
+<section class="panel" id="value" role="tabpanel" aria-labelledby="t-value" hidden>
+  <h2>광고 가치·적정성</h2>
+  <div class="grid2">
+    <div class="block"><h3>게임 흥행</h3><ul>
+      <li>구글 플레이 게임 매출 순위 1위 (10.13, 카카오게임즈 발표)</li>
+      <li>모바일 게임 주간 매출 1위 (10월 3·4주, 모바일인덱스 구글·애플·원스토어 합산)</li>
+    </ul></div>
+    <div class="block"><h3>거래 수요</h3><ul style="list-style:none;padding-left:0">
+      <li>핵심 재화 '금전' 게임사 미판매</li>
+      <li>→ 유저 간 거래 의존, 현금거래 수요 큼</li>
+    </ul></div>
+  </div>
+  <div class="block"><h3>타깃 적합도</h3><ul>
+    <li>거래소 시세 도구 사이트 → 거래 유저와 접점</li>
+  </ul></div>
+  <div class="tbl"><table style="min-width:480px">
+    <thead><tr><th>현재 광고주</th><th>업종</th><th>지면</th><th>배너 혜택</th></tr></thead>
+    <tbody>
+      <tr><td class="name">게임마켓</td><td><span class="pill bad">아이템거래</span></td><td>중앙 메인 배너 (순환)</td><td>판매수수료 1% · 추천인 '깨비지지' 1.5만 원 · 글 작성 3천 원</td></tr>
+      <tr><td class="name">지지페이</td><td><span class="pill warn">게임충전</span></td><td>중앙 메인 배너 (순환)</td><td>확인 필요</td></tr>
+      <tr><td class="name">구글 애드센스</td><td><span class="pill neutral">네트워크 광고</span></td><td>좌우 사이드 · 본문 · 하단 (예: 블레이드앤소울 NEO)</td><td>—</td></tr>
+    </tbody>
+  </table></div>
+  <div class="block"><h3>거래 시장 경쟁 <span class="pill neutral">10.08~10.27</span></h3>
+    <div class="tbl" style="border:0"><table style="min-width:400px">
+      <thead><tr><th>구분</th><th>건수</th><th>금액</th><th>단가</th></tr></thead>
+      <tbody>
+        <tr><td class="name">아이템매니아</td><td><b>21,876건</b></td><td>13.07억</td><td>6.0만</td></tr>
+        <tr><td class="name">바로템</td><td>18,362건</td><td><b>13.96억</b></td><td><b>7.6만</b></td></tr>
+        <tr><td class="name">아이템베이</td><td>32건</td><td>0.12억</td><td>—</td></tr>
+      </tbody>
+    </table></div>
+    <ul style="margin-top:10px">
+      <li>매니아 금액 점유율 42% → 48% → 51%</li>
+    </ul>
+    <p class="note" style="margin:8px 0 0">※ 10.28 이후 바로템 집계 누락 · 게임마켓 데이터 없음</p>
+  </div>
+  <div class="block"><h3>매니아 거래 추이 <span class="pill good">상승세</span></h3>
+    <div class="tbl" style="border:0"><table style="min-width:400px">
+      <thead><tr><th>구간</th><th>일평균 건수</th><th>일평균 금액</th><th>단가</th></tr></thead>
+      <tbody>
+        <tr><td>1주 (10.08~)</td><td>554건</td><td>2,844만</td><td>5.1만</td></tr>
+        <tr><td>2주 (10.15~)</td><td>1,340건</td><td>8,076만</td><td>6.0만</td></tr>
+        <tr><td>3주 (10.22~)</td><td>1,407건</td><td>8,830만</td><td>6.3만</td></tr>
+        <tr><td>4주 (10.29~11.02)</td><td><b>1,514건</b></td><td><b>9,859만</b></td><td><b>6.5만</b></td></tr>
+      </tbody>
+    </table></div>
+    <ul style="margin-top:10px">
+      <li>누적 30,674건 · 18.75억</li>
+      <li>주 5~12% 성장, 정점 미도달</li>
+    </ul>
+  </div>
+  <div class="callout ok"><h3>판단</h3>경쟁사 선집행 = 매체 가치 검증. 매니아는 이미 우위라 '방어'보다 추가 유입 확보가 목적</div>
+  <div class="block"><h3>기대 효과</h3><ul>
+    <li><b>신규 거래 유저 유입:</b> 도깨비의세계 공략·계산기 사이트에서 매니아 직접 노출</li>
+    <li><b>판매 물품 확대:</b> 사냥 금전 판매자 유입 → 물품 증가 → 구매자 유입 선순환</li>
+    <li><b>금액 점유율 확대:</b> 현재 51% → 바로템과 격차 확대</li>
+    <li><b>거래처 인지도 확보:</b> 경쟁사와 같은 지면 노출로 거래처 선택지에 매니아 포함</li>
+  </ul>
+  <p class="note" style="margin:8px 0 0">※ 예시: 월 100만 원 집행 시 광고 유입 거래 하루 약 10건이면 광고비 회수 (수수료 5%, 건당 평균 6.5만 원 기준)</p>
+  </div>
+  <div class="callout"><h3>한계</h3><ul style="margin:0;padding-left:18px">
+    <li>트래픽 미공개</li>
+    <li>비공식 개인 운영</li>
+    <li>유사 사이트 <a href="https://kkaebi.gg/" target="_blank" rel="noopener">kkaebi.gg</a>로 유입 분산</li>
+  </ul></div>
+  <div class="src">출처 · <a href="https://www.gamevu.co.kr/news/articleView.html?idxno=61796" target="_blank" rel="noopener">게임뷰</a> · <a href="https://zdnet.co.kr/view/?no=20261016105930" target="_blank" rel="noopener">ZDNet</a> · <a href="https://www.gamemeca.com/view.php?gid=1780749" target="_blank" rel="noopener">게임메카</a> · 내부 거래 데이터</div>
+</section>
+
+<!-- 3 -->
+<section class="panel" id="contact" role="tabpanel" aria-labelledby="t-contact" hidden>
+  <h2>컨택 여부</h2>
+  <div class="block"><h3>종합 판단</h3>
+    <div class="tbl" style="border:0"><table style="min-width:440px">
+      <thead><tr><th>항목</th><th>결과</th><th>근거</th></tr></thead>
+      <tbody>
+        <tr><td class="name">게임 흥행</td><td><span class="pill good">충족</span></td><td>구글 매출 1위, 주간 매출 1위</td></tr>
+        <tr><td class="name">거래 수요</td><td><span class="pill good">충족</span></td><td>금전 게임사 미판매 → 유저 간 거래 의존</td></tr>
+        <tr><td class="name">타깃 적합도</td><td><span class="pill good">충족</span></td><td>거래소 시세 도구 사이트 → 거래 유저 접점</td></tr>
+        <tr><td class="name">동종업계 집행</td><td><span class="pill good">충족</span></td><td>게임마켓·지지페이 중앙 배너 집행 중</td></tr>
+        <tr><td class="name">매니아 거래 추이</td><td><span class="pill good">상승세</span></td><td>주 5~12% 성장, 금액 점유율 42% → 51%</td></tr>
+        <tr><td class="name">집행 타이밍</td><td><span class="pill good">적기</span></td><td>거래량 정점 전 + 11~1월 매월 신규 콘텐츠</td></tr>
+        <tr class="pick"><td class="name">→ 컨택 여부</td><td><span class="pill good">진행 권장</span></td><td></td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="grid2">
+    <div class="block"><h3>컨택 경로</h3><ul>
+      <li>사이트 하단 제휴 이메일</li>
+      <li>kkaebigg.com/contact</li>
+      <li>통합 디스코드 · 오픈톡방</li>
+    </ul></div>
+    <div class="block"><h3>확인 사항</h3><ul class="check">
+      <li><input type="checkbox" id="ck1"><label for="ck1">트래픽 (UV·PV·모바일 비중)</label></li>
+      <li><input type="checkbox" id="ck2"><label for="ck2">단가 · 과금 방식 · 최소 기간</label></li>
+      <li><input type="checkbox" id="ck3"><label for="ck3">계약 방식 (고정비 / 추천인 성과형)</label></li>
+      <li><input type="checkbox" id="ck4"><label for="ck4">동시 게재 · 독점 가능 여부, 슬라이드 순환 비율</label></li>
+      <li><input type="checkbox" id="ck5"><label for="ck5">배너 규격 · 소재 교체 가능 주기</label></li>
+      <li><input type="checkbox" id="ck6"><label for="ck6">클릭 수 등 성과 데이터 제공 여부</label></li>
+      <li><input type="checkbox" id="ck7"><label for="ck7">사업자 등록 · 세금계산서 발행 가능 여부</label></li>
+      <li><input type="checkbox" id="ck8"><label for="ck8">계약서 작성 · 결제 방식 (선결제 / 후결제)</label></li>
+      <li><input type="checkbox" id="ck9"><label for="ck9">중도 중단 시 환불 조건</label></li>
+    </ul></div>
+  </div>
+</section>
+
+<!-- 4 -->
+<section class="panel" id="plan" role="tabpanel" aria-labelledby="t-plan" hidden>
+  <h2>집행 계획 (예시)</h2>
+  <p class="lead">깨비지지 중앙 메인 배너 광고로 1개월 테스트 집행</p>
+  <div class="block"><h3>일정</h3>
+    <div class="tbl" style="border:0"><table style="min-width:380px">
+      <tbody>
+        <tr><td class="name">11월 2주</td><td>컨택 · 견적 수령</td></tr>
+        <tr><td class="name">11월 3주</td><td>조건 협의 · 소재 제작</td></tr>
+        <tr><td class="name">11월 4주~12월 4주</td><td>1개월 테스트 집행</td></tr>
+        <tr><td class="name">1월 1주</td><td>성과 보고 · 연장 판단</td></tr>
+        <tr><td class="name">연장 시</td><td>1월 100일 기념 이벤트까지</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="grid2">
+    <div class="block"><h3>지면</h3><ul>
+      <li>중앙 메인 배너 (기와 프레임 슬라이드)</li>
+      <li>게임마켓·지지페이와 순환 노출</li>
+      <li>애드센스 광고와 같은 페이지에 노출</li>
+      <li>규격은 운영자 확인 필요</li>
+    </ul></div>
+    <div class="block"><h3>랜딩</h3><ul>
+      <li>도깨비의세계 물품리스트 페이지 연결</li>
+      <li>UTM 부착 (깨비지지 유입 구분)</li>
+    </ul></div>
+  </div>
+  <div class="block"><h3>광고비</h3><p style="margin:0">컨택 후 견적 수령</p></div>
+  <div class="block"><h3>소재 <span class="pill neutral">패치일 기준 교체</span></h3>
+    <div class="tbl" style="border:0"><table style="min-width:520px">
+      <thead><tr><th>교체 시점</th><th>유형</th><th>문구 예시</th></tr></thead>
+      <tbody>
+        <tr><td class="name" style="white-space:normal">차원 점령전·불가살이 레이드 패치일 <small class="note">(11월)</small> <a href="https://www.inven.co.kr/webzine/news/?news=322611" target="_blank" rel="noopener" class="note">[인벤]</a> <a href="https://www.gameple.co.kr/news/articleView.html?idxno=216815" target="_blank" rel="noopener" class="note">[게임플]</a></td><td><span class="pill neutral">시세형</span></td><td>"차원 점령전 장비값 마련? 금전 1만당 2.2만 원~ 지금 시세 확인"</td></tr>
+        <tr><td class="name" style="white-space:normal">PvP 콘텐츠 패치일 <small class="note">(12월)</small> <a href="https://www.inven.co.kr/webzine/news/?news=322611" target="_blank" rel="noopener" class="note">[인벤]</a> <a href="https://www.khgames.co.kr/news/articleView.html?idxno=309724" target="_blank" rel="noopener" class="note">[경향게임스]</a></td><td><span class="pill neutral">보상형</span></td><td>"PvP 시즌 장비 구매, 구매보상 200%로 안전하게"</td></tr>
+        <tr><td class="name" style="white-space:normal">1차 초월 패치일 <small class="note">(1월)</small> <a href="https://www.inven.co.kr/webzine/news/?news=322611" target="_blank" rel="noopener" class="note">[인벤]</a> <a href="https://www.khgames.co.kr/news/articleView.html?idxno=309724" target="_blank" rel="noopener" class="note">[경향게임스]</a></td><td><span class="pill neutral">판매자형</span></td><td>"초월 재료값, 사냥한 금전 팔아서 마련 · 구매자 수수료 0원"</td></tr>
+        <tr><td class="name">공통</td><td colspan="2">'안전거래' 메시지 <span class="note">(탄력적으로 변경 가능)</span></td></tr>
+      </tbody>
+    </table></div>
+    <p class="note" style="margin:8px 0 0">※ 패치일에 맞춰 교체, 문구는 숫자·혜택 중심 (패치 날짜·수치는 확인 후 확정)</p>
+  </div>
+  <div class="block"><h3>예시 화면 <span class="pill neutral">예시 이미지 · 실제 캡처 아님</span></h3>
+    <div style="display:grid;gap:18px">
+
+      <div class="step"><h4><b>①</b> 깨비지지 메인 · 중앙 배너 3번째 슬라이드</h4>
+        <div class="kk" role="img" aria-label="깨비지지 메인 기와 프레임 안에 아이템매니아 배너가 노출된 예시">
+          <div class="top"><b>깨비지지</b><span class="nv"><span class="on">홈</span><span>도감</span><span>도술 빌더</span><span>통계</span><span>계산기</span><span>가이드</span><span>커뮤니티</span></span></div>
+          <div class="sky">
+            <div class="roof"></div>
+            <div class="frame">
+              <div class="mb nov"><span class="tag">AD</span><span><span class="brand">ITEMMANIA</span><b>차원 점령전 장비값 마련?</b>금전 1만당 2.2만 원~ 지금 시세 확인</span><span class="cta">시세 보기 →</span></div>
+              <div class="dots"><i></i><i></i><i class="on"></i></div>
+            </div>
+            <div class="steps"></div>
+          </div>
+          <div class="wall"></div>
+        </div>
+        <p class="mock-cap">게임마켓·지지페이 배너와 순환 노출 (점 3개 중 3번째)</p>
+      </div>
+
+      <div class="step"><h4><b>②</b> 패치일 기준 소재 교체</h4>
+        <div class="creatives">
+          <figure><div class="mb nov"><span class="tag">AD</span><span><span class="brand">ITEMMANIA</span><b>차원 점령전 장비값 마련?</b>금전 1만당 2.2만 원~ 지금 시세 확인</span><span class="cta">시세 보기 →</span></div><figcaption>차원 점령전 패치 · 시세형</figcaption></figure>
+          <figure><div class="mb dec"><span class="tag">AD</span><span><span class="brand">ITEMMANIA</span><b>PvP 시즌 장비 구매</b>구매보상 200%로 안전하게</span><span class="cta">물품 보기 →</span></div><figcaption>PvP 패치 · 보상형</figcaption></figure>
+          <figure><div class="mb jan"><span class="tag">AD</span><span><span class="brand">ITEMMANIA</span><b>초월 재료값, 금전 팔아서 마련</b>구매자 수수료 0원, 빠른 판매</span><span class="cta">판매 등록 →</span></div><figcaption>1차 초월 패치 · 판매자형</figcaption></figure>
+        </div>
+      </div>
+
+      <div class="step"><h4><b>③</b> 클릭 시 매니아 도깨비의세계 물품리스트로 이동</h4>
+        <div class="br"><div class="url"><code>itemmania.com/…/도깨비의세계<em>?utm_source=kkaebigg&amp;utm_medium=banner&amp;utm_campaign=dokkaebi_11</em></code></div></div>
+        <p class="mock-cap">주황색 UTM 코드로 깨비지지 유입을 구분해 가입·거래 집계</p>
+      </div>
+    </div>
+  </div>
+  <div class="block"><h3>성과 지표</h3>
+    <div class="tbl" style="border:0"><table style="min-width:440px">
+      <thead><tr><th>구분</th><th>지표</th><th>데이터 출처</th></tr></thead>
+      <tbody>
+        <tr><td class="name">배너 반응</td><td>노출 수, 클릭 수, 클릭률</td><td>운영자 제공</td></tr>
+        <tr><td class="name">전환</td><td>유입, 신규 가입, 첫 거래, 거래금액</td><td>매니아 내부 (UTM)</td></tr>
+        <tr><td class="name">판단</td><td>광고비 회수율</td><td>→ 연장 기준에서 사용</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+  <div class="block"><h3>연장 기준 <span class="pill neutral">1개월 테스트 후</span></h3>
+    <div class="decision">
+      <div><span>광고 유입 수수료 수익 ≥ 광고비</span><span class="pill good">연장</span></div>
+      <div><span>광고비의 50~100% 회수</span><span class="pill warn">단가·지면 조정 후 연장</span></div>
+      <div><span>50% 미만 회수</span><span class="pill bad">종료</span></div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<script>
+(function(){
+  document.querySelectorAll('.check input[type=checkbox]').forEach(function(c){
+    try{c.checked=localStorage.getItem('kkb-'+c.id)==='1'}catch(e){}
+    c.addEventListener('change',function(){try{localStorage.setItem('kkb-'+c.id,c.checked?'1':'0')}catch(e){}});
+  });
+})();
+(function(){
+  try{
+    const p=new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+    const g=t=>p.find(x=>x.type===t).value;
+    document.getElementById('today').textContent=g('year')+'.'+g('month')+'.'+g('day');
+  }catch(e){}
+})();
+(function(){
+  const ids=["media","value","contact","plan"];
+  const tabs=[...document.querySelectorAll('[role="tab"]')];
+  function show(id,push){
+    if(!ids.includes(id)) id="media";
+    tabs.forEach(t=>t.setAttribute("aria-selected",String(t.getAttribute("aria-controls")===id)));
+    ids.forEach(p=>{document.getElementById(p).hidden=(p!==id)});
+    if(push && location.hash!=="#"+id) history.replaceState(null,"","#"+id);
+  }
+  tabs.forEach((t,i)=>{
+    t.addEventListener("click",()=>show(t.getAttribute("aria-controls"),true));
+    t.addEventListener("keydown",e=>{
+      if(e.key!=="ArrowRight"&&e.key!=="ArrowLeft")return;
+      const n=tabs[(i+(e.key==="ArrowRight"?1:-1)+tabs.length)%tabs.length];
+      n.focus();n.click();
+    });
+  });
+  show(location.hash.slice(1),false);
+  addEventListener("hashchange",()=>show(location.hash.slice(1),false));
+
+})();
+</script>
+
+
+</body></html>
